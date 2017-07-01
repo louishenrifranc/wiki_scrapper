@@ -41,14 +41,15 @@ class Map(LuigiTaskLinkParameter):
     def run(self):
         all_links = self.input().open('r').read()
         for link in all_links.strip().split("/n"):
-            potential_movie_links = yield WorkerGetAllURL(link)
+            try:
+                potential_movie_links = yield WorkerGetAllURL(link)
 
-            potential_movie_links = potential_movie_links.open('r').read()
-            for link in potential_movie_links.strip().split():
-                yield WorkerFilterIsMoviePage(link)
-        except Exception as e:
-        logging.debug('Failed with message {}'.format(str(e)))
-        continue
+                potential_movie_links = potential_movie_links.open('r').read()
+                for link in potential_movie_links.strip().split():
+                    yield WorkerFilterIsMoviePage(link)
+            except Exception as e:
+                logging.debug('Failed with message {}'.format(str(e)))
+                continue
 
 
 class ListFile(luigi.ExternalTask):
