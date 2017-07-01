@@ -1,5 +1,5 @@
 from unittest import TestCase
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 from cache import Cache
 from copy import copy
 import shutil
@@ -48,10 +48,11 @@ class TestCache(TestCase):
             Test function correct behaviour when calling cache
         """
         cache, func = self._setup_cache()
-        self.assertEqual(cache("url"), 1)
-        self.assertEqual(cache("url2"), 2)
-        self.assertEqual(cache("url2"), 2)
-        self.assertEqual(cache("url3"), 3)
+
+        self.assertEqual(cache(None, "url"), 1)
+        self.assertEqual(cache(None, "url2"), 2)
+        self.assertEqual(cache(None, "url2"), 2)
+        self.assertEqual(cache(None, "url3"), 3)
 
         self.assertTrue("url" and "url2" and "url3" in cache._cache)
         self.assertEqual(cache._cache["url"], 1)
@@ -66,15 +67,14 @@ class TestCache(TestCase):
             Test serialization and deserializtion
         """
         cache, func = self._setup_cache()
-        cache("url1")
-        cache("url3")
-        cache("url2")
-        cache("url2")
-        cache("url2")
+        cache(None, "url1")
+        cache(None, "url3")
+        cache(None, "url2")
+        cache(None, "url2")
+        cache(None, "url2")
         cache._serialize()
         previous_cache = copy(cache._cache)
         del cache
 
         cache = Cache(func)
         self.assertEqual(cache._cache, previous_cache)
-    
