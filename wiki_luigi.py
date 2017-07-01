@@ -34,22 +34,36 @@ class WorkerFilterIsMoviePage(LuigiTaskLinkParameter):
             f.write(self.link + " : " + str(is_movie_page))
 
 
-class Scheduler(LuigiTaskLinkParameter):
+class Map(LuigiTaskLinkParameter):
     def requires(self):
         return WorkerGetAllURL(self.link)
 
     def run(self):
         all_links = self.input().open('r').read()
         for link in all_links.strip().split("/n"):
-            try:
-                potential_movie_links = yield WorkerGetAllURL(link)
+            potential_movie_links = yield WorkerGetAllURL(link)
 
-                potential_movie_links = potential_movie_links.open('r').read()
-                for link in potential_movie_links.strip().split():
-                    yield WorkerFilterIsMoviePage(link)
-            except Exception as e:
-                logging.debug('Failed with message {}'.format(str(e)))
-                continue
+            potential_movie_links = potential_movie_links.open('r').read()
+            for link in potential_movie_links.strip().split():
+                yield WorkerFilterIsMoviePage(link)
+        except Exception as e:
+        logging.debug('Failed with message {}'.format(str(e)))
+        continue
+
+
+class ListFile(luigi.ExternalTask):
+    def output(self):
+        path = os.listdir("." + WorkerFilterIsMoviePage.__class__.__name__.lower())
+        return [luigi.LocalTarget(os.path.join(path, file)) for file in path]
+
+
+class Reduce(LuigiTaskLinkParameter):
+    def requires(self):
+        yield Map(self.link)
+        yield ListFile()
+
+    def run(self):
+        self.input()
 
 
 if __name__ == '__main__':

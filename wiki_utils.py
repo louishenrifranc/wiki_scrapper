@@ -3,15 +3,15 @@ import requests
 import wptools
 from urllib3 import util
 import re
-from cache import Cache
-from multiprocessing import Pool, Manager
-from functools import partial
 
 
 def get_all_urls_on_page(url: str):
-    r = requests.get(url)
+    try:
+        r = requests.get(url)
+    except:
+        return list()
     if r.status_code == 404:
-        return None
+        return list()
 
     soup = BeautifulSoup(r.text, "lxml")
     links = soup.findAll("a")
