@@ -70,4 +70,4 @@ class Reduce(LuigiTaskLinkParameter):
 if __name__ == '__main__':
     os.makedirs(".log", exist_ok=True)
     logging.basicConfig(filename=os.path.join('.log', 'error.log'), level=logging.DEBUG)
-    luigi.run(['Scheduler', '--link', "https://en.wikipedia.org/wiki/Lists_of_films", "--local-scheduler"])
+    luigi.run(['Map', '--link', "https://en.wikipedia.org/wiki/Lists_of_films", "--local-scheduler"])
