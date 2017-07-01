@@ -4,8 +4,6 @@ import luigi
 import os
 import logging
 
-logging.basicConfig(filename=os.path.join('log', 'error.log'), level=logging.DEBUG)
-
 
 class LuigiTaskLinkParameter(luigi.Task):
     link = luigi.Parameter()
@@ -36,7 +34,7 @@ class WorkerFilterIsMoviePage(LuigiTaskLinkParameter):
             f.write(self.link + " : " + str(is_movie_page))
 
 
-class MainWorker(LuigiTaskLinkParameter):
+class Scheduler(LuigiTaskLinkParameter):
     def requires(self):
         return WorkerGetAllURL(self.link)
 
@@ -55,4 +53,6 @@ class MainWorker(LuigiTaskLinkParameter):
 
 
 if __name__ == '__main__':
+    os.makedirs(".log", exist_ok=True)
+    logging.basicConfig(filename=os.path.join('.log', 'error.log'), level=logging.DEBUG)
     luigi.run(['Scheduler', '--link', "https://en.wikipedia.org/wiki/Lists_of_films", "--local-scheduler"])
