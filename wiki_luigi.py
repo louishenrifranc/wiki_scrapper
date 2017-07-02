@@ -73,6 +73,7 @@ class SearchMovieLinkWorker(luigi.Task):
 
 
 if __name__ == '__main__':
+    raise NotImplementedError("Not finished, neither fully working")
     os.makedirs(".log", exist_ok=True)
     logging.basicConfig(filename=os.path.join('.log', 'error.log'), level=logging.DEBUG)
     luigi.run(['SearchMovieLinkWorker'])

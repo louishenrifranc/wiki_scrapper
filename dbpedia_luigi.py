@@ -24,6 +24,7 @@ class Worker(luigi.Task):
         movies_info = get_movie_xml_info(sparql=sparql,
                                          offset=self.current_index,
                                          limit=LIMIT_RETRIEVAL_DBPEDIA)
+        print("INFOFF", len(movies_info))
         # If no error, save the info in a json file
         with self.output().open("w") as f:
             f.write(movies_info)
@@ -52,7 +53,7 @@ class Scheduler(luigi.Task):
 
 if __name__ == '__main__':
     args = ArgumentParser()
-    args.add_argument('--num_retrieved_movie', type=int, default=100000, help='Number of movies')
+    args.add_argument('--num_retrieved_movie', type=int, default=80000, help='Number of movies')
     args.add_argument('--starting_index', type=int, default=0,
                       help='Starting index')
 
