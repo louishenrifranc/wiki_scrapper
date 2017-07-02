@@ -1,6 +1,6 @@
 import luigi
 import os
-from wiki_utils import get_movie_xml_info
+from dbpedia_utils import get_movie_xml_info
 from argparse import ArgumentParser
 from SPARQLWrapper import SPARQLWrapper
 
