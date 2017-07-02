@@ -6,6 +6,13 @@ import re
 
 
 def get_all_urls_on_page(url: str):
+    """
+        Given a URL, return all referenced url on that page
+    Args:
+        url (str): a url
+    Returns:
+        (list) of url
+    """
     try:
         r = requests.get(url)
     except:
@@ -19,6 +26,14 @@ def get_all_urls_on_page(url: str):
 
 
 def is_movie_wiki_page(url: str):
+    """
+        Given a URL, predict if it is a Wikipedia Page about a movie
+    Args:
+        url (str): a url
+    Returns:
+        (bool) True if the {{ url }} is a "movie wiki page"
+    """
+    # Most Wiki movie page ended with "_(film)" or "_(2016-film)"
     if re.search(url, "_\(([0-9a-zA-Z]*_)?film\)$"):
         return True
     else:
@@ -33,5 +48,3 @@ def is_movie_wiki_page(url: str):
         elif "starring" and "director" and "released" in info_box:
             return True
     return False
-
-
