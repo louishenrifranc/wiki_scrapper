@@ -16,14 +16,14 @@ def get_movie_xml_info(sparql, offset, limit):
 
     sparql.setQuery("""
         SELECT ?abstract ?title ?director
-                (group_concat(?starring;separator="\\n") as ?starrings) 
+                (group_concat(?starring;separator="\\n") as ?starrings)
         WHERE {
         ?title rdf:type             <http://dbpedia.org/ontology/Film> ;
                dbo:abstract         ?abstract ;
                dbo:director         ?director ;
-               dbo:starring         ?starring 
+               dbo:starring         ?starring
         FILTER (langMatches(lang(?abstract),"en"))
-        }  GROUP BY ?abstract ?title ?director 
+        }  GROUP BY ?abstract ?title ?director
         LIMIT """ + str(limit) + """ OFFSET """ + str(offset))
 
     sparql.setReturnFormat(XML)
