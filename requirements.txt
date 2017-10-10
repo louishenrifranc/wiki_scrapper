@@ -1,3 +1,4 @@
 luigi
 SPARQLWrapper
 argparse
+pymysql

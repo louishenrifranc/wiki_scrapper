@@ -3,6 +3,7 @@ from collections import namedtuple
 import urllib.parse
 import pymysql
 import os
+import re
 
 Movie = namedtuple("Movie", "title abstract director starrings")
 
@@ -71,6 +72,7 @@ class DialogueDbHelper:
               INSERT INTO `{}`
                 ({})
               VALUES ({})
+              ON DUPLICATE KEY UPDATE
             """.format(
             table_name,
             ",".join(table_columns),
@@ -93,7 +95,7 @@ class DialogueDbHelper:
             return cursor.lastrowid
 
 
-def parse_movie_and_add_to_database(movie: Movie, db_helper: DialogueDbHelper):
+def parse_movie_and_add_to_database(movie, db_helper):
     """
         Parse movie information (from url to real value) and insert them to the database
     Args:
@@ -101,7 +103,7 @@ def parse_movie_and_add_to_database(movie: Movie, db_helper: DialogueDbHelper):
         db_helper (DialogueDbHelper): helper to insert into the database
     """
 
-    def parse(x): return urllib.parse.urlparse(x).path.split('/')[-1]
+    def parse(x): return re.sub('\(.*\)', '', " ".join(urllib.parse.urlparse(x).path.split('/')[-1].split('_')))
 
     abstract = movie.abstract
     director = parse(movie.director)
@@ -121,11 +123,11 @@ def parse_movie_and_add_to_database(movie: Movie, db_helper: DialogueDbHelper):
 
 
 if __name__ == "__main__":
-    connection = pymysql.cursors(db='dialoguedb',
+    connection = pymysql.connect(db='dialoguedb',
                                  user='root',
                                  passwd='password',
                                  host='localhost')
-    insertor = DialogueDbHelper(connection=connection)
+    insertor = DialogueDbHelper(connection=None)
 
     movie_info_gen = get_movie_info_from_folder(".movie")
     for movie_info in movie_info_gen:
